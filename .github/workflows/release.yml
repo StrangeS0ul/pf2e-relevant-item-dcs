@@ -1,0 +1,61 @@
+name: Publish Foundry module
+
+on:
+  push:
+    branches:
+      - main
+    paths:
+      - module.json
+      - scripts/**
+      - styles/**
+      - README.md
+      - .github/workflows/release.yml
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  release:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Check out module
+        uses: actions/checkout@v4
+
+      - name: Run DC calculation tests
+        run: node tests/test-dc.mjs
+
+      - name: Publish new version
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          GH_REPO: ${{ github.repository }}
+        shell: bash
+        run: |
+          set -euo pipefail
+          version="$(node -p 'JSON.parse(require("node:fs").readFileSync("module.json", "utf8")).version')"
+          if [[ ! "$version" =~ ^[0-9]+\.[0-9]+\.[0-9]+(-[A-Za-z0-9.-]+)?$ ]]; then
+            echo "Unsupported module version: $version" >&2
+            exit 1
+          fi
+          tag="v${version}"
+
+          if gh release view "$tag" >/dev/null 2>&1; then
+            echo "Release $tag already exists; bump module.json version to publish changes."
+            exit 0
+          fi
+
+          package_dir="$RUNNER_TEMP/foundry-package"
+          mkdir -p "$package_dir"
+          cp module.json "$package_dir/module.json"
+          cp -r scripts styles "$package_dir/"
+          cp README.md "$package_dir/README.md"
+
+          archive="$RUNNER_TEMP/pf2e-relevant-item-dcs.zip"
+          (cd "$package_dir" && zip -q -r "$archive" module.json scripts styles README.md)
+
+          gh release create "$tag" \
+            "$package_dir/module.json" \
+            "$archive" \
+            --target "$GITHUB_SHA" \
+            --title "PF2e Relevant Item DCs $tag" \
+            --generate-notes

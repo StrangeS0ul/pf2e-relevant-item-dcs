@@ -1,0 +1,39 @@
+{
+  "id": "pf2e-relevant-item-dcs",
+  "title": "PF2e Relevant Item DCs",
+  "description": "Keeps numeric save DCs on PC-owned physical items relevant by flooring them at the standard DC for character level minus a configurable level lag, while preserving higher printed DCs.",
+  "version": "0.1.0",
+  "authors": [
+    {
+      "name": "Asad Tipu"
+    }
+  ],
+  "compatibility": {
+    "minimum": "14",
+    "verified": "14"
+  },
+  "relationships": {
+    "systems": [
+      {
+        "id": "pf2e",
+        "type": "system",
+        "compatibility": {
+          "minimum": "8.4.0",
+          "verified": "8.4.0"
+        }
+      }
+    ]
+  },
+  "esmodules": [
+    "scripts/main.mjs"
+  ],
+  "styles": [
+    "styles/item-dc.css"
+  ],
+  "url": "https://github.com/StrangeS0ul/pf2e-relevant-item-dcs",
+  "manifest": "https://github.com/StrangeS0ul/pf2e-relevant-item-dcs/releases/latest/download/module.json",
+  "download": "https://github.com/StrangeS0ul/pf2e-relevant-item-dcs/releases/download/v0.1.0/pf2e-relevant-item-dcs.zip",
+  "readme": "https://github.com/StrangeS0ul/pf2e-relevant-item-dcs/blob/main/README.md",
+  "bugs": "https://github.com/StrangeS0ul/pf2e-relevant-item-dcs/issues",
+  "changelog": "https://github.com/StrangeS0ul/pf2e-relevant-item-dcs/releases"
+}
